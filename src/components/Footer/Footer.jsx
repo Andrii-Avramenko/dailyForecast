@@ -1,3 +1,7 @@
+import {logo} from '../Footer/Images/logo.png'
+import {whatsapp} from './Images/whatsapp.png'
+import {Instagram} from './Images/Instagram.png'
+import {Facebook} from './Images/Facebook.png'
 import {
     Container,
     ContentWrapper,
@@ -15,7 +19,7 @@ function Footer() {
         <>
     <Container>
       <ContentWrapper>
-        <Logo src="../Footer/Images/logo.png" alt="24/7 Forecast" />
+        <Logo src={logo} alt="24/7 Forecast" />
 
         <Section>
           <Title>Address</Title>
@@ -31,17 +35,17 @@ function Footer() {
           <SocialList>
             <SocialItem>
               <a href="#"  rel="">
-                <SocialIcon src="../Footer/Images/Instagram.png" alt="Instagram" />
+                <SocialIcon src={Instagram} alt="Instagram" />
               </a>
             </SocialItem>
             <SocialItem>
               <a href="#"  rel="">
-                <SocialIcon src="./Images/Facebook.png" alt="Facebook" />
+                <SocialIcon src={Facebook} alt="Facebook" />
               </a>
             </SocialItem>
             <SocialItem>
               <a href="#"  rel="">
-                <SocialIcon src="./Images/whatsapp.png" alt="WhatsApp" />
+                <SocialIcon src={whatsapp} alt="WhatsApp" />
               </a>
             </SocialItem>
           </SocialList>
