@@ -16,6 +16,11 @@ export const Navigation = styled.nav`
   ul {
     display: flex;
     gap: 45px;
+    font-family: ${({theme}) => theme.fonts.secondary};
+  }
+
+  a {
+    color: ${({theme}) => theme.colors.black};
   }
 `;
 
