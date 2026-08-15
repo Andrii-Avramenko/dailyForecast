@@ -1,9 +1,11 @@
 import { useState } from "react";
-import logo from "../Footer/Images/logo.png";
+import logo from "../../assets/logo.webp";
 import user from "../../assets/header/user.png";
 import Modal from "../Modal/Modal";
 
-export default function Header() {
+import { StyledHeader, Navigation, UserInfo, SignUp } from "./Header.styled";
+
+export default function Header({ name = "" }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -16,37 +18,29 @@ export default function Header() {
 
   return (
     <>
-      <header id="header">
-        <img src={logo} alt="24/7 Forecast logo" />
-
-        <nav>
+      <StyledHeader id="header">
+        <Navigation>
+          <a href="#">
+            <img src={logo} alt="24/7 Forecast logo" />
+          </a>
           <ul>
             <li>
               <a href="#hero">Who we are</a>
             </li>
-
             <li>
               <a href="#footer">Contacts</a>
             </li>
-
             <li>
               <a href="#">Menu</a>
             </li>
           </ul>
-        </nav>
-
-        <div>
-          <button type="button" onClick={openModal}>
-            Sign Up
-          </button>
-
+        </Navigation>
+        <UserInfo>
+          <SignUp type="button" onClick={openModal}>Sign Up</SignUp>
           <img src={user} alt="user icon" />
-        </div>
-      </header>
-
-      {isModalOpen && (
-        <Modal onClose={closeModal} />
-      )}
+        </UserInfo>
+      </StyledHeader>
+      {isModalOpen && <Modal onClose={closeModal} />}
     </>
   );
 }
