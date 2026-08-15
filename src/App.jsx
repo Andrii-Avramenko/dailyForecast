@@ -17,7 +17,6 @@ function App() {
       <News />
       <Gallery />
       <Footer />
-      <Modal />
       <GlobalStyle />
     </>
   );
