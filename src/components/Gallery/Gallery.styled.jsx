@@ -129,7 +129,7 @@ export const GalleryItem = styled.div`
 
       "-4": `
         transform:
-          translate(calc(-50% - 800px), 0)
+          translate(calc(-50% - 800px), -50%)
           scale(0.3);
 
         opacity: 0;
@@ -141,7 +141,7 @@ export const GalleryItem = styled.div`
 
       4: `
         transform:
-          translate(calc(-50% + 800px), 0)
+          translate(calc(-50% + 800px), -50%)
           scale(0.3);
 
         opacity: 0;
@@ -153,7 +153,7 @@ export const GalleryItem = styled.div`
 
       "-5": `
         transform:
-          translate(calc(-50% - 950px), 0)
+          translate(calc(-50% - 950px), -50%)
           scale(0.2);
 
         opacity: 0;
@@ -165,7 +165,7 @@ export const GalleryItem = styled.div`
 
       5: `
         transform:
-          translate(calc(-50% + 950px), 0)
+          translate(calc(-50% + 950px), -50%)
           scale(0.2);
 
         opacity: 0;
