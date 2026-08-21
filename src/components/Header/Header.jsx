@@ -1,5 +1,5 @@
-import { useState } from "react";
-import logo from "../Footer/Images/logo.png";
+import { useEffect, useState } from "react";
+import logo from "../../assets/logo.webp";
 import user from "../../assets/header/user.png";
 import Modal from "../Modal/Modal";
 
@@ -24,37 +24,30 @@ export default function Header() {
 
   return (
     <>
-      <header id="header">
-        <img src={logo} alt="24/7 Forecast logo" />
-
-        <nav>
+      <StyledHeader id="header">
+        <Navigation>
+          <a href="#">
+            <img src={logo} alt="24/7 Forecast logo" />
+          </a>
           <ul>
             <li>
               <a href="#hero">Who we are</a>
             </li>
-
             <li>
               <a href="#footer">Contacts</a>
             </li>
-
             <li>
               <a href="#">Menu</a>
             </li>
           </ul>
-        </nav>
-
-        <div>
-          <button type="button" onClick={openModal}>
-            Sign Up
-          </button>
-
+        </Navigation>
+        <UserInfo>
+          {!username && <SignUp type="button" onClick={openModal}>Sign Up</SignUp>}
+          {!!username && <p>{username}</p>}
           <img src={user} alt="user icon" />
-        </div>
-      </header>
-
-      {isModalOpen && (
-        <Modal onClose={closeModal} />
-      )}
+        </UserInfo>
+      </StyledHeader>
+      {isModalOpen && <Modal onClose={closeModal} updateName={updateName}/>}
     </>
   );
 }
