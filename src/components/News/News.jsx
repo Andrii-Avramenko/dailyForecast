@@ -74,17 +74,9 @@ export const News = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const sectionTitleRef = useRef(null);
 
-<<<<<<< Updated upstream
   const smoothScrollTo = (targetElement, duration = 800) => {
     if (!targetElement) return;
 
-=======
-  // Кастомна функція дуже плавного скролу з регулюванням тривалості (duration)
-  const smoothScrollTo = (targetElement, duration = 800) => {
-    if (!targetElement) return;
-
-    // Відступ зверху (якщо є фіксований хедер, можна збільшити offset)
->>>>>>> Stashed changes
     const offset = 20;
     const targetPosition =
       targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
@@ -92,10 +84,6 @@ export const News = () => {
     const distance = targetPosition - startPosition;
     let startTime = null;
 
-<<<<<<< Updated upstream
-=======
-    // Формула плавного сповільнення (easeInOutCubic)
->>>>>>> Stashed changes
     const easeInOutCubic = (t) =>
       t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
 
@@ -117,15 +105,8 @@ export const News = () => {
 
   const handleToggle = () => {
     if (isExpanded) {
-<<<<<<< Updated upstream
       smoothScrollTo(sectionTitleRef.current, 800);
     }
-=======
-      // Плавно скролимо нагору за 800мс перед або під час згортання
-      smoothScrollTo(sectionTitleRef.current, 800);
-    }
-
->>>>>>> Stashed changes
     setIsExpanded((prev) => !prev);
   };
 
