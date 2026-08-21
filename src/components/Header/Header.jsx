@@ -3,8 +3,16 @@ import logo from "../Footer/Images/logo.png";
 import user from "../../assets/header/user.png";
 import Modal from "../Modal/Modal";
 
+import { StyledHeader, Navigation, UserInfo, SignUp } from "./Header.styled";
+
 export default function Header() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [username, setUsername] = useState(() => localStorage.getItem('username') ?? '')
+
+  const updateName = (name) => {
+    localStorage.setItem('username', name)
+    setUsername(name)
+  }
 
   const openModal = () => {
     setIsModalOpen(true);
