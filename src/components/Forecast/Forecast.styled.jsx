@@ -10,8 +10,8 @@ export const Wrapper = styled.div`
   max-width: 700px;
   margin: 0 auto;
   padding: 0 16px;
-  font-family: "Poppins", Arial, sans-serif;
-  color: #2b2b2b;
+  font-family: ${({ theme }) => theme.fonts.main};
+  color: ${({ theme }) => theme.colors.black};
   box-sizing: border-box;
 
   @media (min-width: ${tablet}) {
@@ -25,8 +25,8 @@ export const Wrapper = styled.div`
 `;
 
 export const Card = styled.div`
-  background: #ececec;
-  border-radius: 20px;
+  background: ${({ theme }) => theme.colors.secondaryBackground};
+  border-radius: ${({ theme }) => theme.radii.lg};
   padding: 16px;
 
   @media (min-width: ${tablet}) {
@@ -35,13 +35,13 @@ export const Card = styled.div`
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 600;
-  color: #2b2b2b;
+  color: ${({ theme }) => theme.colors.black};
   margin: 0 0 12px 0;
 
   @media (min-width: ${tablet}) {
-    font-size: 14px;
+    font-size: ${({ theme }) => theme.fontSizes.s};
     margin: 0 0 16px 0;
   }
 `;
@@ -75,8 +75,8 @@ export const DayRow = styled.div`
   justify-content: center;
   text-align: center;
   gap: 8px;
-  background: #e2e2e2;
-  border-radius: 16px;
+  background: ${({ theme }) => theme.colors.tertiaryBackground};
+  border-radius: ${({ theme }) => theme.radii.md};
   padding: 18px 12px;
 
   @media (min-width: ${tablet}) {
@@ -85,18 +85,18 @@ export const DayRow = styled.div`
     align-items: center;
     text-align: left;
     gap: 12px;
-    border-radius: 20px;
+    border-radius: ${({ theme }) => theme.radii.lg};
     padding: 10px 20px;
   }
 `;
 
 export const DayDate = styled.span`
-  font-size: 12px;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 500;
-  color: #2b2b2b;
+  color: ${({ theme }) => theme.colors.black};
 
   @media (min-width: ${tablet}) {
-    font-size: 13px;
+    font-size: ${({ theme }) => theme.fontSizes.xs};
     font-weight: 400;
   }
 `;
@@ -112,24 +112,24 @@ export const DayIcon = styled.img`
 `;
 
 export const DayTemp = styled.span`
-  font-size: 13px;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
   font-weight: 600;
-  color: #2b2b2b;
+  color: ${({ theme }) => theme.colors.black};
 `;
 
 export const DayDescription = styled.span`
-  font-size: 12px;
-  color: #6b6b6b;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.secondaryText};
   text-align: center;
 
   @media (min-width: ${tablet}) {
-    font-size: 13px;
+    font-size: ${({ theme }) => theme.fontSizes.xs};
     text-align: right;
   }
 `;
 
 export const StatusText = styled.p`
-  font-size: 13px;
-  color: #6b6b6b;
+  font-size: ${({ theme }) => theme.fontSizes.xs};
+  color: ${({ theme }) => theme.colors.secondaryText};
   text-align: center;
 `;
