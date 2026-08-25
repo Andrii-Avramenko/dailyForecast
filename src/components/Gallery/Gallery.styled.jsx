@@ -2,6 +2,14 @@ import styled from "styled-components";
 import { theme } from "../../../theme";
 
 export const GallerySection = styled.section`
+  @media screen and (min-width: 480px) {
+display:none;
+
+  }
+
+  @media screen and (min-width: 1200px) {
+display:block;
+  }
   position: relative;
 
   width: 100%;
@@ -9,7 +17,6 @@ export const GallerySection = styled.section`
   margin-bottom: 48px;
 
   overflow: hidden;
-
 `;
 
 export const GalleryTitle = styled.h2`
