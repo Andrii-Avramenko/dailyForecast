@@ -23,7 +23,6 @@ export const ContentWrapper = styled.div`
   padding: 0 20px;
   display: flex;
   flex-direction: column; 
-  align-items: center;
   text-align: center;
   gap: 20px;
 
@@ -41,17 +40,31 @@ export const ContentWrapper = styled.div`
   }
 `;
 
-export const Logo = styled.img`
+export const LogoLink = styled.a`
   width: 90px;
   height: auto;
   object-fit: contain;
+`
+
+export const Logo = styled.img`
+ display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
 `;
+
+export const Box = styled.div`
+  display: flex;
+  column-gap: 200px;
+  justify-content: flex-start;
+`
 
 export const Section = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
+  
 
   @media (min-width: 1024px) {
     align-items: flex-start;
@@ -61,9 +74,9 @@ export const Section = styled.div`
 
 export const Title = styled.h4`
   margin: 0;
-  font-family: ${props => props.theme.fonts.main};
+  font-family: ${props => props.theme.fonts.secondary};
   font-size: 16px;
-  font-weight: ${props => props.theme.fontWeights.bold};
+  font-weight: ${props => props.theme.fontWeights.normal};
   color: ${props => props.theme.colors.black};
 
   @media (min-width: 768px) {
