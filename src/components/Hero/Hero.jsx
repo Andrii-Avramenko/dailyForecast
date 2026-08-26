@@ -27,7 +27,7 @@ function Hero() {
         );
 
   return (
-    <HeroSection>
+    <HeroSection src="C:\Users\vista\Downloads\irina-iriser-QGZ_7Imwdfw-unsplash 1.png">
       <Title>Weather dashboard</Title>
 
       <InfoWrapper>

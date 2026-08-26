@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import heroBg from "./img/irina-iriser-QGZ_7Imwdfw-unsplash 1.png";
 
 export const HeroSection = styled.section`
   position: relative;
@@ -7,7 +8,7 @@ export const HeroSection = styled.section`
   padding: 60px 16px 40px;
   background:
     linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.6)),
-    url("") center/cover no-repeat;
+    url(${heroBg}) center/cover no-repeat; /* 2. Вставляємо змінну */
   color: #ffffff;
   text-align: center;
   font-family:
