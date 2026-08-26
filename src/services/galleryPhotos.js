@@ -2,7 +2,7 @@ const KEY = "50412649-7dd48fe355273c295d58f736c";
 
 async function fetchGalleryPhotos(searchWord, page) {
   const response = await fetch(
-    `https://pixabay.com/api/?q=${searchWord}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`,
+    `https://pixabay.com/api/?q=${searchWord}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=10`,
   );
 
   if (!response.ok) {

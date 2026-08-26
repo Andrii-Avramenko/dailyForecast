@@ -1,7 +1,7 @@
-import {logo} from '../../assets/logo.webp'
-import {whatsapp} from '../../assets/footer/whatsapp .svg'
-import {Instagram} from '../../assets/footer/Instagram.svg'
-import {Facebook} from '../../assets/footer/Facebook.svg'
+import logo from '../../assets/logo.webp'
+import whatsapp from '../../assets/footer/whatsapp.svg'
+import Instagram from '../../assets/footer/Instagram.svg'
+import Facebook from '../../assets/footer/Facebook.svg'
 import {
     Container,
     ContentWrapper,
