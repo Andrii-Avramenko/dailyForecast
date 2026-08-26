@@ -2,13 +2,10 @@ import styled from "styled-components";
 import { theme } from "../../../theme";
 
 export const GallerySection = styled.section`
-  @media screen and (min-width: 480px) {
-display:none;
-
-  }
+  display: none;
 
   @media screen and (min-width: 1200px) {
-display:block;
+    display: block;
   }
   position: relative;
 
@@ -22,7 +19,6 @@ display:block;
 export const GalleryTitle = styled.h2`
   margin-left: 150px;
   margin-bottom: 40px;
-
 
   font-size: ${({ theme }) => theme.fontSizes.l};
   font-weight: ${({ theme }) => theme.fontWeights.bold};
