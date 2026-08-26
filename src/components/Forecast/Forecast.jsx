@@ -20,7 +20,7 @@ import {
   DayTemp,
   DayDescription,
   StatusText,
-} from "./forecast.styled";
+} from "./Forecast.styled";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
