@@ -27,6 +27,7 @@ export const ContentWrapper = styled.div`
   gap: 20px;
 
   @media (min-width: 768px) {
+    flex-direction:row;
     padding: 0 40px;
     gap: 40px;
   }
@@ -57,6 +58,10 @@ export const Box = styled.div`
   display: flex;
   column-gap: 200px;
   justify-content: flex-start;
+
+  @media(min-width:768px){
+    column-gap:100px;
+  }
 `
 
 export const Section = styled.div`
@@ -65,6 +70,7 @@ export const Section = styled.div`
   align-items: center;
   gap: 8px;
   
+
 
   @media (min-width: 1024px) {
     align-items: flex-start;
