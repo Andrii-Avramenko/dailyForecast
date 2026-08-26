@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import {
   ModalBackdrop,
   ModalContainer,
@@ -12,6 +14,20 @@ import {
 } from "./modal.styled";
 
 export default function Modal({ onClose }) {
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [onClose]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -27,14 +43,9 @@ export default function Modal({ onClose }) {
   return (
     <ModalBackdrop onClick={handleBackdropClick}>
       <ModalContainer>
-        <CloseButton
-  type="button"
-  onClick={() => {
-  onClose();
-}}
->
-  ×
-</CloseButton>
+        <CloseButton type="button" onClick={onClose}>
+          ×
+        </CloseButton>
 
         <Title>Sign up</Title>
 

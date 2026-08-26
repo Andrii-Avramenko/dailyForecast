@@ -22,33 +22,37 @@ export const ModalContainer = styled.div`
   position: relative;
 
   width: 100%;
-  max-width: 288px;
+  max-width: 600px;
 
-  padding: 21px 32px 16px;
+  padding: 21 32px 16px;
 
   background-color: #ffffff;
 
-  border-radius: 18px;
+  border-radius: 25px;
 
   box-sizing: border-box;
 
   @media screen and (min-width: 480px) {
-    max-width: 320px;
+
+    max-width: 293px;
+    min-height: 454px;
+
     padding: 24px 35px 18px;
   }
 
   @media screen and (min-width: 768px) {
-    max-width: 360px;
+    max-width: 400px;
+    min-height: 440px;
 
     padding: 28px 40px 20px;
 
-    border-radius: 22px;
+    border-radius: 25px;
   }
 
   @media screen and (min-width: 1200px) {
-    max-width: 390px;
+    max-width: 500px;
 
-    padding: 30px 45px 22px;
+    padding: 60px 45px 22px;
 
     border-radius: 24px;
   }
@@ -237,21 +241,21 @@ export const Button = styled.button`
     width: 85px;
     height: 28px;
 
-    font-size: 10px;
+    font-size: 12px;
   }
 
   @media screen and (min-width: 768px) {
     width: 95px;
     height: 32px;
 
-    font-size: 11px;
+    font-size: 12px;
   }
 
   @media screen and (min-width: 1200px) {
     width: 105px;
     height: 35px;
 
-    font-size: 12px;
+    font-size: 14px;
   }
 `;
 
