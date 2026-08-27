@@ -1,170 +1,114 @@
 import styled from "styled-components";
 
-export const NewsSection = styled.section`
-  padding: 24px 0;
-  background-color: #ffffff;
-  font-family: "Montserrat", "Inter", -apple-system, BlinkMacSystemFont,
-    sans-serif;
-
-  @media screen and (min-width: 393px) {
-    padding: 28px 0;
-  }
-
-  @media screen and (min-width: 834px) {
-    padding: 40px 0;
-  }
-
-  @media screen and (min-width: 1200px) {
-    padding: 48px 0;
-  }
-`;
-
-export const Container = styled.div`
+export const Section = styled.section`
   width: 100%;
-  margin: 0 auto;
+  max-width: 1200px; /* Прив'язка до ширини контейнера всієї сторінки */
+  margin: 40px auto; /* Центрування секції */
   padding: 0 16px;
+  box-sizing: border-box;
 
-  @media screen and (min-width: 393px) {
-    max-width: 393px;
-    padding: 0 20px;
-  }
-
-  @media screen and (min-width: 834px) {
-    max-width: 834px;
+  @media (min-width: 768px) {
     padding: 0 32px;
   }
 
-  @media screen and (min-width: 1200px) {
-    max-width: 1200px;
-    padding: 0 24px;
+  @media (min-width: 1200px) {
+    padding: 0 40px; /* Симетричні відступи зліва та справа */
   }
 `;
 
-export const MainTitle = styled.h2`
+export const Title = styled.h2`
   font-size: 18px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #111111;
+  margin: 0 0 20px 0;
   text-align: left;
-  margin-bottom: 20px;
-  font-family: inherit;
 
-  @media screen and (min-width: 393px) {
-    font-size: 20px;
-    margin-bottom: 22px;
-  }
-
-  @media screen and (min-width: 834px) {
+  @media (min-width: 768px) {
     font-size: 22px;
-    margin-bottom: 28px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    font-size: 24px;
-    margin-bottom: 32px;
   }
 `;
 
-export const NewsGrid = styled.div`
+export const Grid = styled.div`
   display: grid;
+  width: 100%;
   grid-template-columns: 1fr;
-  gap: 20px;
+  gap: 16px;
   margin-bottom: 24px;
 
-  @media screen and (min-width: 834px) {
+  @media (min-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px 20px;
-    margin-bottom: 32px;
+    gap: 20px;
   }
 
-  @media screen and (min-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px 20px;
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(
+      4,
+      1fr
+    ); /* 4 колонки тягнуться на всю ширину */
+    gap: 20px;
   }
 `;
 
 export const Card = styled.a`
-  display: flex;
-  flex-direction: column;
   text-decoration: none;
   color: inherit;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
   transition: transform 0.2s ease;
 
-  @media screen and (min-width: 834px) {
-    &:hover {
-      transform: translateY(-4px);
-    }
+  &:hover {
+    transform: translateY(-3px);
   }
 `;
 
-export const ImageWrapper = styled.div`
+export const Image = styled.img`
   width: 100%;
-  height: 200px;
-  border-radius: 12px;
-  overflow: hidden;
-  margin-bottom: 10px;
-  background-color: #f4f4f4;
-
-  @media screen and (min-width: 393px) {
-    height: 215px;
-  }
-
-  @media screen and (min-width: 834px) {
-    height: 220px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    height: 180px;
-  }
-`;
-
-export const CardImage = styled.img`
-  width: 100%;
-  height: 100%;
+  height: 180px; /* Більша висота для фото */
   object-fit: cover;
-  display: block;
+  border-radius: 12px;
+  margin-bottom: 12px;
+
+  @media (min-width: 768px) {
+    height: 160px;
+  }
+
+  @media (min-width: 1200px) {
+    height: 150px; /* Збільшений розмір картинок під десктоп */
+  }
 `;
 
-export const CardTitle = styled.p`
-  font-size: 14px;
-  font-weight: 500;
-  color: #2b2b2b;
+export const CardTitle = styled.h3`
+  font-size: 13px;
+  font-weight: 400;
   line-height: 1.4;
+  color: #222222;
   margin: 0;
-  font-family: inherit;
+  text-align: left;
 
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 
-  @media screen and (min-width: 834px) {
-    font-size: 13px;
+  @media (min-width: 1200px) {
+    font-size: 12px;
   }
 `;
 
-export const SeeMoreButton = styled.button`
-  display: inline-block;
-  padding: 10px 24px;
-  background-color: #ffb074;
-  color: #1a1a1a;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
+export const Button = styled.button`
+  background-color: #fca766;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
+  padding: 10px 24px;
+  font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-block;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #ffa05a;
-  }
-
-  &:active {
-    transform: scale(0.97);
-  }
-
-  @media screen and (min-width: 834px) {
-    padding: 10px 28px;
+    background-color: #f09552;
   }
 `;

@@ -1,147 +1,115 @@
-import React, { useState, useRef } from "react";
-import {
-  NewsSection,
-  Container,
-  MainTitle,
-  NewsGrid,
-  Card,
-  ImageWrapper,
-  CardImage,
-  CardTitle,
-  SeeMoreButton,
-} from "./News.styled";
+import React, { useEffect, useState } from "react";
+import { fetchPetNews } from "/src/services/newsApi.js";
+import * as S from "./News.styled";
 
-const ALL_PET_NEWS = [
+const MOCK_NEWS = [
   {
-    id: 1,
     title: "Rescue pups pose as ghosts in festive photo shoot",
     urlToImage:
-      "https://images.pexels.com/photos/1108099/pexels-photo-1108099.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1",
   },
   {
-    id: 2,
     title: "Cat interrupts morning coffee on sunny Washington morning",
     urlToImage:
-      "https://images.pexels.com/photos/45201/kitty-cat-kitten-pet-45201.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba",
   },
   {
-    id: 3,
     title: "New study finds dogs pay more attention to women",
     urlToImage:
-      "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8",
   },
   {
-    id: 4,
     title: "Petting dogs gives health benefit, even if they are not yours",
     urlToImage:
-      "https://images.pexels.com/photos/2253275/pexels-photo-2253275.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1587300003388-59208cc962cb",
   },
   {
-    id: 5,
-    title: "How playing fetch improves dog cognitive agility and mood",
+    title: "Friendly cat enjoying sunny afternoon on the porch",
     urlToImage:
-      "https://images.pexels.com/photos/1254140/pexels-photo-1254140.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1573865526739-10659fec78a5",
   },
   {
-    id: 6,
-    title: "Fluffy companions bring warmth and comfort to daily routines",
+    title: "Playful golden retriever running in the park",
     urlToImage:
-      "https://images.pexels.com/photos/1170986/pexels-photo-1170986.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1552053831-71594a27632d",
   },
   {
-    id: 7,
-    title: "Understanding pet body language for better daily connection",
+    title: "Cute kitten playing with a colorful ball of yarn",
     urlToImage:
-      "https://images.pexels.com/photos/1851164/pexels-photo-1851164.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce",
   },
   {
-    id: 8,
-    title: "Exploring outdoors: Safe adventures with your favorite animals",
+    title: "Happy puppy sitting on fresh green grass",
     urlToImage:
-      "https://images.pexels.com/photos/1619690/pexels-photo-1619690.jpeg?auto=compress&cs=tinysrgb&w=600",
-    url: "#",
+      "https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&w=500&q=80",
+    url: "https://images.unsplash.com/photo-1561037404-61cd46aa615b",
   },
 ];
 
 export const News = () => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const sectionTitleRef = useRef(null);
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [visibleCount, setVisibleCount] = useState(4);
 
-  const smoothScrollTo = (targetElement, duration = 800) => {
-    if (!targetElement) return;
+  useEffect(() => {
+    const getNews = async () => {
+      setLoading(true);
+      const data = await fetchPetNews();
 
-    const offset = 20;
-    const targetPosition =
-      targetElement.getBoundingClientRect().top + window.pageYOffset - offset;
-    const startPosition = window.pageYOffset;
-    const distance = targetPosition - startPosition;
-    let startTime = null;
-
-    const easeInOutCubic = (t) =>
-      t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
-
-    const animation = (currentTime) => {
-      if (!startTime) startTime = currentTime;
-      const timeElapsed = currentTime - startTime;
-      const progress = Math.min(timeElapsed / duration, 1);
-      const easeProgress = easeInOutCubic(progress);
-
-      window.scrollTo(0, startPosition + distance * easeProgress);
-
-      if (timeElapsed < duration) {
-        requestAnimationFrame(animation);
+      if (data && data.length >= 4) {
+        const cleanData = data
+          .filter((item) => item.urlToImage && item.title)
+          .filter(
+            (item, index, self) =>
+              index === self.findIndex((a) => a.url === item.url)
+          );
+        setArticles(cleanData);
+      } else {
+        setArticles(MOCK_NEWS);
       }
+      setLoading(false);
     };
 
-    requestAnimationFrame(animation);
-  };
+    getNews();
+  }, []);
 
   const handleToggle = () => {
-    if (isExpanded) {
-      smoothScrollTo(sectionTitleRef.current, 800);
-    }
-    setIsExpanded((prev) => !prev);
+    setVisibleCount((prev) => (prev === 4 ? 8 : 4));
   };
 
-  const visibleArticles = isExpanded ? ALL_PET_NEWS : ALL_PET_NEWS.slice(0, 4);
+  if (loading) {
+    return <S.Section>Loading...</S.Section>;
+  }
 
   return (
-    <NewsSection id="news">
-      <Container>
-        <MainTitle ref={sectionTitleRef}>Interacting with our pets</MainTitle>
+    <S.Section>
+      <S.Title>Interacting with our pets</S.Title>
 
-        <NewsGrid>
-          {visibleArticles.map((item) => (
-            <Card
-              key={item.id}
-              href={item.url !== "#" ? item.url : undefined}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ImageWrapper>
-                <CardImage
-                  src={item.urlToImage}
-                  alt={item.title}
-                  loading="lazy"
-                />
-              </ImageWrapper>
-              <CardTitle>{item.title}</CardTitle>
-            </Card>
-          ))}
-        </NewsGrid>
+      <S.Grid>
+        {articles.slice(0, visibleCount).map((item, index) => (
+          <S.Card
+            key={`${item.url}-${index}`}
+            href={item.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <S.Image src={item.urlToImage} alt={item.title} />
+            <S.CardTitle>{item.title}</S.CardTitle>
+          </S.Card>
+        ))}
+      </S.Grid>
 
-        <SeeMoreButton onClick={handleToggle}>
-          {isExpanded ? "Show less" : "See more"}
-        </SeeMoreButton>
-      </Container>
-    </NewsSection>
+      <S.Button onClick={handleToggle}>
+        {visibleCount === 4 ? "See more" : "Show less"}
+      </S.Button>
+    </S.Section>
   );
 };
 
