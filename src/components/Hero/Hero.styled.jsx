@@ -114,7 +114,7 @@ export const DateWrapper = styled.div`
   }
 `;
 
-export const SearchContainer = styled.div`
+export const SearchContainer = styled.form`
   position: relative;
   display: inline-flex;
   width: 100%;

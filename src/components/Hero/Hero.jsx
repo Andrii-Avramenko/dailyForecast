@@ -10,24 +10,53 @@ import {
   SearchContainer,
   SearchInput,
   SearchButton,
-  DropdownList,
-  DropdownItem,
 } from "./Hero.styled";
+import fetchCityForecast from "../../services/citySeach";
+
+const getOrdinalSuffix = (day) => {
+  if (day > 3 && day < 21) return "th";
+  switch (day % 10) {
+    case 1:
+      return "st";
+    case 2:
+      return "nd";
+    case 3:
+      return "rd";
+    default:
+      return "th";
+  }
+};
 
 function Hero() {
-  const [searching, setSearching] = useState("");
+  const [cityName, setCityName] = useState("");
 
-  const items = ["Яблуко", "Банан", "Апельсин", "Ківі", "Ананас"];
+  const today = new Date();
 
-  const filteredItems =
-    searching.trim() === ""
-      ? []
-      : items.filter((item) =>
-          item.toLowerCase().includes(searching.toLowerCase()),
-        );
+  const monthYear = today.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  });
+
+  const dayOfWeek = today.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
+  const dayOfMonth = today.getDate();
+  const suffix = getOrdinalSuffix(dayOfMonth);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!cityName) return;
+    try {
+      const newCityForecast = await fetchCityForecast(cityName);
+      console.log(newCityForecast);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <HeroSection src="C:\Users\vista\Downloads\irina-iriser-QGZ_7Imwdfw-unsplash 1.png">
+    <HeroSection>
       <Title>Weather dashboard</Title>
 
       <InfoWrapper>
@@ -37,33 +66,24 @@ function Hero() {
         </Description>
         <Divider />
         <DateWrapper>
-          <div>August 2026</div>
+          <div>{monthYear}</div>
           <div>
-            Wensdey, 26<sup>th</sup>
+            {dayOfWeek}, {dayOfMonth}
+            <sup>{suffix}</sup>
           </div>
         </DateWrapper>
       </InfoWrapper>
 
-      <SearchContainer>
+      <SearchContainer onSubmit={handleSubmit}>
         <SearchInput
-          onChange={(e) => setSearching(e.target.value)}
-          value={searching}
+          onChange={(e) => setCityName(e.target.value)}
+          value={cityName}
           type="text"
           placeholder="Search location..."
         />
         <SearchButton>
           <HiOutlineSearch />
         </SearchButton>
-
-        {filteredItems.length > 0 && (
-          <DropdownList>
-            {filteredItems.map((item, index) => (
-              <DropdownItem key={index} onClick={() => setSearching(item)}>
-                {item}
-              </DropdownItem>
-            ))}
-          </DropdownList>
-        )}
       </SearchContainer>
     </HeroSection>
   );
