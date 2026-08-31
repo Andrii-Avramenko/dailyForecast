@@ -1,116 +1,81 @@
-import React, { useEffect, useState } from "react";
-import { fetchPetNews } from "/src/services/newsApi.js";
-import * as S from "./News.styled";
-
-const MOCK_NEWS = [
-  {
-    title: "Rescue pups pose as ghosts in festive photo shoot",
-    urlToImage:
-      "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1543466835-00a7907e9de1",
-  },
-  {
-    title: "Cat interrupts morning coffee on sunny Washington morning",
-    urlToImage:
-      "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba",
-  },
-  {
-    title: "New study finds dogs pay more attention to women",
-    urlToImage:
-      "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8",
-  },
-  {
-    title: "Petting dogs gives health benefit, even if they are not yours",
-    urlToImage:
-      "https://images.unsplash.com/photo-1587300003388-59208cc962cb?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1587300003388-59208cc962cb",
-  },
-  {
-    title: "Friendly cat enjoying sunny afternoon on the porch",
-    urlToImage:
-      "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1573865526739-10659fec78a5",
-  },
-  {
-    title: "Playful golden retriever running in the park",
-    urlToImage:
-      "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1552053831-71594a27632d",
-  },
-  {
-    title: "Cute kitten playing with a colorful ball of yarn",
-    urlToImage:
-      "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1533738363-b7f9aef128ce",
-  },
-  {
-    title: "Happy puppy sitting on fresh green grass",
-    urlToImage:
-      "https://images.unsplash.com/photo-1561037404-61cd46aa615b?auto=format&fit=crop&w=500&q=80",
-    url: "https://images.unsplash.com/photo-1561037404-61cd46aa615b",
-  },
-];
+import { useState, useEffect } from "react";
+import { getNewsArticles } from "../../services/newsApi";
+import {
+  NewsSection,
+  NewsTitle,
+  NewsList,
+  NewsCard,
+  NewsImage,
+  ArticleTitle,
+  SeeMoreButton,
+} from "./News.styled";
 
 export const News = () => {
   const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [visibleCount, setVisibleCount] = useState(4);
+  const [isExpanded, setIsExpanded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+ 
   useEffect(() => {
-    const getNews = async () => {
-      setLoading(true);
-      const data = await fetchPetNews();
-
-      if (data && data.length >= 4) {
-        const cleanData = data
-          .filter((item) => item.urlToImage && item.title)
-          .filter(
-            (item, index, self) =>
-              index === self.findIndex((a) => a.url === item.url)
-          );
-        setArticles(cleanData);
-      } else {
-        setArticles(MOCK_NEWS);
+    const fetchInitialNews = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const data = await getNewsArticles(1, 4);
+        setArticles(data);
+      } catch (err) {
+        setError(err.message || "Не вдалося завантажити новини");
+      } finally {
+        setIsLoading(false);
       }
-      setLoading(false);
     };
 
-    getNews();
+    fetchInitialNews();
   }, []);
 
-  const handleToggle = () => {
-    setVisibleCount((prev) => (prev === 4 ? 8 : 4));
+  
+  const handleToggle = async () => {
+    if (isExpanded) {
+      
+      setArticles((prev) => prev.slice(0, 4));
+      setIsExpanded(false);
+    } else {
+     
+      try {
+        setIsLoading(true);
+        const newArticles = await getNewsArticles(2, 4);
+        setArticles((prev) => [...prev, ...newArticles]);
+        setIsExpanded(true);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    }
   };
 
-  if (loading) {
-    return <S.Section>Loading...</S.Section>;
-  }
+  if (isLoading && articles.length === 0) return <p>Завантаження новин...</p>;
+  if (error && articles.length === 0)
+    return <p style={{ color: "red" }}>Помилка: {error}</p>;
 
   return (
-    <S.Section>
-      <S.Title>Interacting with our pets</S.Title>
+    <NewsSection>
+      <NewsTitle>Interacting with our pets</NewsTitle>
 
-      <S.Grid>
-        {articles.slice(0, visibleCount).map((item, index) => (
-          <S.Card
-            key={`${item.url}-${index}`}
-            href={item.url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <S.Image src={item.urlToImage} alt={item.title} />
-            <S.CardTitle>{item.title}</S.CardTitle>
-          </S.Card>
+      <NewsList>
+        {articles.map((item) => (
+          <NewsCard key={item.id}>
+            <NewsImage src={item.webformatURL} alt={item.tags} />
+            <ArticleTitle>{item.tags}</ArticleTitle>
+          </NewsCard>
         ))}
-      </S.Grid>
+      </NewsList>
 
-      <S.Button onClick={handleToggle}>
-        {visibleCount === 4 ? "See more" : "Show less"}
-      </S.Button>
-    </S.Section>
+      <SeeMoreButton onClick={handleToggle} disabled={isLoading}>
+        {isLoading ? "Loading..." : isExpanded ? "Show less" : "See more"}
+      </SeeMoreButton>
+    </NewsSection>
   );
 };
-
 export default News;
