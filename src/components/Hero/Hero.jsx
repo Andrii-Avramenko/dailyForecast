@@ -56,7 +56,7 @@ function Hero() {
   };
 
   return (
-    <HeroSection>
+    <HeroSection id='hero'>
       <Title>Weather dashboard</Title>
 
       <InfoWrapper>
