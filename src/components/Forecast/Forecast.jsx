@@ -35,12 +35,12 @@ function formatHour(unixSeconds) {
 
 function formatDayShort(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
-  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function formatDay(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
-  return date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 }
 
 
