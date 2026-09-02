@@ -47,8 +47,7 @@ import {
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
 
-const LAT = 50.0755;
-const LON = 14.4378;
+const DEFAULT_COORDINATES = { lat: 50.0755, lon: 14.4378 };
 
 const buildCurrentCityState = (cityName = "Prague", countryName = "Czech Republic") => {
   const now = new Date();
@@ -57,6 +56,7 @@ const buildCurrentCityState = (cityName = "Prague", countryName = "Czech Republi
   return {
     city: cityName,
     country: countryName,
+    ...DEFAULT_COORDINATES,
     time: now.toLocaleTimeString([], {
       hour: "2-digit",
       minute: "2-digit",
@@ -143,6 +143,7 @@ function groupByDay(list) {
 export default function Forecast() {
   const [hourly, setHourly] = useState([]);
   const [daily, setDaily] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favoriteCities, setFavoriteCities] = useState([
@@ -175,6 +176,8 @@ export default function Forecast() {
             id: `${city.city}-${Date.now()}`,
             city: city.city,
             country: city.country || "",
+            lat: city.lat,
+            lon: city.lon,
             time: city.time || "14:00",
             date: city.date || "Today",
             day: city.day || "Today",
@@ -195,7 +198,12 @@ export default function Forecast() {
   }, []);
 
   useEffect(() => {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&units=metric&appid=${API_KEY}`;
+    if (!selectedCity) return;
+
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${selectedCity.lat}&lon=${selectedCity.lon}&units=metric&appid=${API_KEY}`;
+
+    setLoading(true);
+    setError(null);
 
     fetch(url)
       .then((res) => {
@@ -211,23 +219,7 @@ export default function Forecast() {
         setError(err.message);
         setLoading(false);
       });
-  }, []);
-
-  if (loading) {
-    return (
-      <Wrapper>
-        <StatusText>Loading forecast...</StatusText>
-      </Wrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <Wrapper>
-        <StatusText>Something went wrong: {error}</StatusText>
-      </Wrapper>
-    );
-  }
+  }, [selectedCity]);
 
   const handleDeleteCity = (cityId) => {
     setFavoriteCities((prevCities) =>
@@ -315,7 +307,13 @@ export default function Forecast() {
 
               <CityTime>{city.time}</CityTime>
 
-              <CityTag>Hourly forecast</CityTag>
+              <CityTag
+                type="button"
+                onClick={() => setSelectedCity(city)}
+                aria-pressed={selectedCity?.id === city.id}
+              >
+                Hourly forecast
+              </CityTag>
 
               <CityMeta>
                 <span>{city.date}</span>
@@ -373,31 +371,41 @@ export default function Forecast() {
         </CityGrid>
       </CitySection>
 
-      <Card>
-        <CardTitle>Hourly forecast</CardTitle>
-        <ChartWrapper>
-          <Line data={chartData} options={chartOptions} />
-        </ChartWrapper>
-      </Card>
+      {selectedCity && (
+        <>
+          {loading && <StatusText>Loading forecast for {selectedCity.city}...</StatusText>}
+          {error && <StatusText>Something went wrong: {error}</StatusText>}
+          {!loading && !error && (
+            <>
+              <Card>
+                <CardTitle>Hourly forecast for {selectedCity.city}</CardTitle>
+                <ChartWrapper>
+                  <Line data={chartData} options={chartOptions} />
+                </ChartWrapper>
+              </Card>
 
-      <Card>
-        <CardTitle>5-day forecast</CardTitle>
-        <DayList>
-          {daily.map((day) => (
-            <DayRow key={day.dt}>
-              <DayDate>{formatDay(day.dt)}</DayDate>
-              <DayIcon
-                src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
-                alt={day.description}
-              />
-              <DayTemp>
-                {Math.round(day.max)}/{Math.round(day.min)}°C
-              </DayTemp>
-              <DayDescription>{day.description}</DayDescription>
-            </DayRow>
-          ))}
-        </DayList>
-      </Card>
+              <Card>
+                <CardTitle>5-day forecast for {selectedCity.city}</CardTitle>
+                <DayList>
+                  {daily.map((day) => (
+                    <DayRow key={day.dt}>
+                      <DayDate>{formatDay(day.dt)}</DayDate>
+                      <DayIcon
+                        src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
+                        alt={day.description}
+                      />
+                      <DayTemp>
+                        {Math.round(day.max)}/{Math.round(day.min)}°C
+                      </DayTemp>
+                      <DayDescription>{day.description}</DayDescription>
+                    </DayRow>
+                  ))}
+                </DayList>
+              </Card>
+            </>
+          )}
+        </>
+      )}
     </Wrapper>
   );
 }

@@ -19,6 +19,8 @@ const fetchCityForecast = (cityName) => {
           detail: {
             city: data.name || cityName,
             country: data.sys?.country || "",
+            lat: data.coord?.lat,
+            lon: data.coord?.lon,
             temperature: Math.round(data.main?.temp ?? 0),
             description: data.weather?.[0]?.description || "clear sky",
             icon: data.weather?.[0]?.icon || "01d",

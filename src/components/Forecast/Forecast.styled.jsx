@@ -202,7 +202,7 @@ export const CityTime = styled.div`
   align-items: center;
 `;
 
-export const CityTag = styled.div`
+export const CityTag = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -216,8 +216,14 @@ export const CityTag = styled.div`
   font-size: 10px;
   font-weight: 500;
   line-height: 100%;
+  cursor: pointer;
   margin-bottom: 15px;
   margin-top: 10px;
+
+  &:hover,
+  &[aria-pressed="true"] {
+    filter: brightness(0.95);
+  }
 `;
 
 export const CityMeta = styled.div`
@@ -286,15 +292,11 @@ export const MoreButton = styled.button`
   font-size: 0.72rem;
   font-weight: 600;
   padding: 9px 14px;
-  cursor: pointer;
+  cursor: default;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 8px 16px rgba(243, 160, 90, 0.25);
   opacity: 0.9;
-
-  &:disabled {
-    cursor: default;
-    opacity: 0.9;
-  }
 `;
+
