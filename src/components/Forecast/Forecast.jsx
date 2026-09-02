@@ -9,6 +9,12 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import {
+  HiOutlineHeart,
+  HiOutlineArrowRight,
+  HiOutlineTrash,
+  HiOutlineRefresh,
+} from "react-icons/hi";
+import {
   Wrapper,
   Card,
   CardTitle,
@@ -20,13 +26,53 @@ import {
   DayTemp,
   DayDescription,
   StatusText,
+  CitySection,
+  CityGrid,
+  CityCard,
+  CityHeader,
+  CityName,
+  CityCountry,
+  CityTime,
+  CityTag,
+  CityMeta,
+  WeatherIcon,
+  CityTempValue,
+  CityActions,
+  ActionButton,
+  FavoriteButton,
+  DeleteButton,
+  MoreButton,
 } from "./Forecast.styled";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
 
-const LAT = 50.0755; 
+const LAT = 50.0755;
 const LON = 14.4378;
+
+const buildCurrentCityState = (cityName = "Prague", countryName = "Czech Republic") => {
+  const now = new Date();
+  const tempValue = 21 + (now.getHours() % 5) + Math.round(now.getMinutes() / 15);
+
+  return {
+    city: cityName,
+    country: countryName,
+    time: now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    }),
+    date: now.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }),
+    day: now.toLocaleDateString("en-US", { weekday: "long" }),
+    temperature: tempValue,
+    icon: "01d",
+    description: "clear sky",
+  };
+};
 
 function formatHour(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
@@ -99,6 +145,54 @@ export default function Forecast() {
   const [daily, setDaily] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favoriteCities, setFavoriteCities] = useState([
+    {
+      id: "prague-1",
+      ...buildCurrentCityState("Prague", "Czech Republic"),
+    },
+    {
+      id: "prague-2",
+      ...buildCurrentCityState("Prague", "Czech Republic"),
+    },
+    {
+      id: "prague-3",
+      ...buildCurrentCityState("Prague", "Czech Republic"),
+    },
+  ]);
+
+  useEffect(() => {
+    const handleCityAdded = (event) => {
+      const city = event.detail;
+      if (!city?.city) return;
+
+      setFavoriteCities((prevCities) => {
+        const filtered = prevCities.filter(
+          (item) => item.city.toLowerCase() !== city.city.toLowerCase()
+        );
+
+        return [
+          {
+            id: `${city.city}-${Date.now()}`,
+            city: city.city,
+            country: city.country || "",
+            time: city.time || "14:00",
+            date: city.date || "Today",
+            day: city.day || "Today",
+            temperature: city.temperature ?? 0,
+            icon: city.icon || "01d",
+            description: city.description || "clear sky",
+          },
+          ...filtered,
+        ].slice(0, 3);
+      });
+    };
+
+    window.addEventListener("cityForecastAdded", handleCityAdded);
+
+    return () => {
+      window.removeEventListener("cityForecastAdded", handleCityAdded);
+    };
+  }, []);
 
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&units=metric&appid=${API_KEY}`;
@@ -109,7 +203,7 @@ export default function Forecast() {
         return res.json();
       })
       .then((data) => {
-        setHourly(data.list.slice(0, 16)); 
+        setHourly(data.list.slice(0, 16));
         setDaily(groupByDay(data.list));
         setLoading(false);
       })
@@ -134,6 +228,36 @@ export default function Forecast() {
       </Wrapper>
     );
   }
+
+  const handleDeleteCity = (cityId) => {
+    setFavoriteCities((prevCities) =>
+      prevCities.filter((city) => city.id !== cityId)
+    );
+  };
+
+  const handleLikeCity = (cityId) => {
+    setFavoriteCities((prevCities) => {
+      const index = prevCities.findIndex((city) => city.id === cityId);
+      if (index === -1) return prevCities;
+
+      const likedCity = prevCities[index];
+      const withoutCity = prevCities.filter((city) => city.id !== cityId);
+      return [likedCity, ...withoutCity];
+    });
+  };
+
+  const handleRefreshCity = (cityId) => {
+    setFavoriteCities((prevCities) =>
+      prevCities.map((city) =>
+        city.id === cityId
+          ? {
+              ...city,
+              ...buildCurrentCityState(city.city, city.country),
+            }
+          : city
+      )
+    );
+  };
 
   const chartData = {
     labels: buildHourlyLabels(hourly),
@@ -180,6 +304,75 @@ export default function Forecast() {
 
   return (
     <Wrapper>
+      <CitySection>
+        <CityGrid>
+          {favoriteCities.map((city) => (
+            <CityCard key={city.id}>
+              <CityHeader>
+                <CityName>{city.city}</CityName>
+                <CityCountry>{city.country}</CityCountry>
+              </CityHeader>
+
+              <CityTime>{city.time}</CityTime>
+
+              <CityTag>Hourly forecast</CityTag>
+
+              <CityMeta>
+                <span>{city.date}</span>
+                <span>|</span>
+                <span>{city.day}</span>
+              </CityMeta>
+
+              <WeatherIcon
+                src={`https://openweathermap.org/img/wn/${city.icon}@2x.png`}
+                alt={city.description}
+              />
+
+              <CityTempValue>{city.temperature}°C</CityTempValue>
+
+              <CityActions>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <DeleteButton
+                    type="button"
+                    aria-label="Refresh city"
+                    onClick={() => handleRefreshCity(city.id)}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      color: "#f0a25d",
+                    }}
+                  >
+                    <HiOutlineRefresh />
+                  </DeleteButton>
+
+                  <FavoriteButton
+                    type="button"
+                    aria-label="Like city"
+                    onClick={() => handleLikeCity(city.id)}
+                  >
+                    <HiOutlineHeart />
+                  </FavoriteButton>
+                </div>
+
+                <MoreButton type="button" disabled>
+                  See more
+                  <HiOutlineArrowRight style={{ marginLeft: 6 }} />
+                </MoreButton>
+
+                <DeleteButton
+                  type="button"
+                  aria-label="Delete city"
+                  onClick={() => handleDeleteCity(city.id)}
+                >
+                  <HiOutlineTrash />
+                </DeleteButton>
+              </CityActions>
+            </CityCard>
+          ))}
+        </CityGrid>
+      </CitySection>
+
       <Card>
         <CardTitle>Hourly forecast</CardTitle>
         <ChartWrapper>
