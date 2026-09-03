@@ -1,27 +1,28 @@
+import axios from "axios";
+
 const BASE_URL = "https://api.openweathermap.org";
 
 const API_KEY = "e3544af785f813ecfa684286223143f6";
 
 export const fetchForecast = (lat, lon) => {
-  return fetch(
-    `${BASE_URL}/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
-  ).then((response) => {
-    if (!response.ok) {
+  return axios
+    .get(`${BASE_URL}/data/2.5/forecast`, {
+      params: { lat, lon, units: "metric", appid: API_KEY },
+    })
+    .then((response) => response.data)
+    .catch(() => {
       throw new Error("Failed to fetch forecast");
-    }
-    return response.json();
-  });
+    });
 };
 
 const fetchCityForecast = (cityName) => {
-  return fetch(
-    `${BASE_URL}/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("City not found!");
-      }
-      return response.json();
+  return axios
+    .get(`${BASE_URL}/data/2.5/weather`, {
+      params: { q: cityName, appid: API_KEY, units: "metric" },
+    })
+    .then((response) => response.data)
+    .catch(() => {
+      throw new Error("City not found!");
     })
     .then((data) => {
       if (typeof window !== "undefined") {
