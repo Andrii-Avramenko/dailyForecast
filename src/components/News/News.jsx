@@ -100,7 +100,7 @@ export const News = () => {
           </SeeMoreButton>
         )}
 
-        {articles.length >= 12 && (
+        {articles.length > 4 && (
           <CollapseButton type="button" onClick={handleCollapse}>
             Collapse
           </CollapseButton>
