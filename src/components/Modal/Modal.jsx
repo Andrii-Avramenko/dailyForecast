@@ -11,9 +11,10 @@ import {
   Button,
   LoginText,
   LoginLink,
-} from "./modal.styled";
+}
+ from "./modal.styled.";
 
-export default function Modal({ onClose }) {
+export default function Modal({ onClose, onRegister }) {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -31,7 +32,20 @@ export default function Modal({ onClose }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log("Form submitted");
+    const username = event.target.username.value;
+    const email = event.target.email.value;
+    const password = event.target.password.value;
+
+    const user = {
+      username,
+      email,
+      password,
+    };
+
+    localStorage.setItem("user", JSON.stringify(user));
+
+    onRegister(user);
+    onClose();
   };
 
   const handleBackdropClick = (event) => {
@@ -51,27 +65,30 @@ export default function Modal({ onClose }) {
 
         <Form onSubmit={handleSubmit}>
           <Label htmlFor="username">Username</Label>
-
           <Input
             id="username"
+            name="username"
             type="text"
             placeholder="Username"
+            required
           />
 
           <Label htmlFor="email">E-Mail</Label>
-
           <Input
             id="email"
+            name="email"
             type="email"
             placeholder="E-Mail"
+            required
           />
 
           <Label htmlFor="password">Password</Label>
-
           <Input
             id="password"
+            name="password"
             type="password"
             placeholder="Password"
+            required
           />
 
           <Button type="submit">
