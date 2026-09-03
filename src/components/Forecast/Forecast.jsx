@@ -43,9 +43,9 @@ import {
   DeleteButton,
   MoreButton,
 } from "./Forecast.styled";
+import { fetchForecast } from "../../services/citySeach";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
-const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
 
 const DEFAULT_COORDINATES = { lat: 50.0755, lon: 14.4378 };
 
@@ -200,16 +200,10 @@ export default function Forecast() {
   useEffect(() => {
     if (!selectedCity) return;
 
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${selectedCity.lat}&lon=${selectedCity.lon}&units=metric&appid=${API_KEY}`;
-
     setLoading(true);
     setError(null);
 
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch forecast");
-        return res.json();
-      })
+    fetchForecast(selectedCity.lat, selectedCity.lon)
       .then((data) => {
         setHourly(data.list.slice(0, 16));
         setDaily(groupByDay(data.list));
