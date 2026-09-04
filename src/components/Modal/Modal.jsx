@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import {
   ModalBackdrop,
@@ -14,7 +14,7 @@ import {
 }
  from "./modal.styled.";
 
-export default function Modal({ onClose, onRegister }) {
+export default function Modal({ onClose }) {
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -32,20 +32,7 @@ export default function Modal({ onClose, onRegister }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const username = event.target.username.value;
-    const email = event.target.email.value;
-    const password = event.target.password.value;
-
-    const user = {
-      username,
-      email,
-      password,
-    };
-
-    localStorage.setItem("user", JSON.stringify(user));
-
-    onRegister(user);
-    onClose();
+    console.log("Form submitted");
   };
 
   const handleBackdropClick = (event) => {
@@ -70,7 +57,6 @@ export default function Modal({ onClose, onRegister }) {
             name="username"
             type="text"
             placeholder="Username"
-            required
           />
 
           <Label htmlFor="email">E-Mail</Label>
@@ -79,7 +65,6 @@ export default function Modal({ onClose, onRegister }) {
             name="email"
             type="email"
             placeholder="E-Mail"
-            required
           />
 
           <Label htmlFor="password">Password</Label>
@@ -88,7 +73,6 @@ export default function Modal({ onClose, onRegister }) {
             name="password"
             type="password"
             placeholder="Password"
-            required
           />
 
           <Button type="submit">

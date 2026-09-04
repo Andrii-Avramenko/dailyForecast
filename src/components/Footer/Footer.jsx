@@ -12,14 +12,19 @@ import {
     SocialList,
     SocialItem,
     SocialIcon,
+    LogoLink,
+    Box,
   } from './Footer.styled';
 
 function Footer() {
     return (
         <>
-    <Container>
+    <Container id='footer'>
       <ContentWrapper>
+      <Box>
+      <LogoLink>
         <Logo src={logo} alt="24/7 Forecast" />
+        </LogoLink>
 
         <Section>
           <Title>Address</Title>
@@ -29,7 +34,7 @@ function Footer() {
             Ukraine
           </AddressText>
         </Section>
-
+      </Box>
         <Section>
           <Title>Contact us</Title>
           <SocialList>

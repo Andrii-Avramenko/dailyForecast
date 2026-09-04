@@ -1,121 +1,54 @@
 import styled from "styled-components";
 
 export const NewsSection = styled.section`
-  padding: 24px 0;
-  background-color: #ffffff;
-  font-family: "Montserrat", "Inter", -apple-system, BlinkMacSystemFont,
-    sans-serif;
-
-  @media screen and (min-width: 393px) {
-    padding: 28px 0;
-  }
-
-  @media screen and (min-width: 834px) {
-    padding: 40px 0;
-  }
-
-  @media screen and (min-width: 1200px) {
-    padding: 48px 0;
-  }
-`;
-
-export const Container = styled.div`
-  width: 100%;
+  padding: 40px 20px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 0 16px;
 
-  @media screen and (min-width: 393px) {
-    max-width: 393px;
-    padding: 0 20px;
-  }
-
-  @media screen and (min-width: 834px) {
-    max-width: 834px;
-    padding: 0 32px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    max-width: 1200px;
-    padding: 0 24px;
+  @media (max-width: 1024px) {
+    display: none;
   }
 `;
 
-export const MainTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 600;
-  color: #1a1a1a;
+export const SectionTitle = styled.h2`
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  color: #212121;
+  margin-bottom: 40px;
   text-align: left;
-  margin-bottom: 20px;
-  font-family: inherit;
-
-  @media screen and (min-width: 393px) {
-    font-size: 20px;
-    margin-bottom: 22px;
-  }
-
-  @media screen and (min-width: 834px) {
-    font-size: 22px;
-    margin-bottom: 28px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    font-size: 24px;
-    margin-bottom: 32px;
-  }
 `;
 
 export const NewsGrid = styled.div`
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(4, 270px);
   gap: 20px;
-  margin-bottom: 24px;
-
-  @media screen and (min-width: 834px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 24px 20px;
-    margin-bottom: 32px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px 20px;
-  }
+  margin-bottom: 40px;
+  justify-content: start;
 `;
 
-export const Card = styled.a`
+export const NewsCard = styled.article`
   display: flex;
   flex-direction: column;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-
-  @media screen and (min-width: 834px) {
-    &:hover {
-      transform: translateY(-4px);
-    }
-  }
+  width: 270px;
+  background: transparent;
 `;
 
 export const ImageWrapper = styled.div`
-  width: 100%;
-  height: 200px;
+  width: 270px;
+  height: 208px;
+  flex-shrink: 0;
   border-radius: 12px;
   overflow: hidden;
-  margin-bottom: 10px;
-  background-color: #f4f4f4;
+  background-color: #e2e8f0;
+  margin-bottom: 20px;
+`;
 
-  @media screen and (min-width: 393px) {
-    height: 215px;
-  }
-
-  @media screen and (min-width: 834px) {
-    height: 220px;
-  }
-
-  @media screen and (min-width: 1200px) {
-    height: 180px;
-  }
+export const ImageLink = styled.a`
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
 `;
 
 export const CardImage = styled.img`
@@ -123,48 +56,69 @@ export const CardImage = styled.img`
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: scale(1.03);
+  }
 `;
 
-export const CardTitle = styled.p`
+export const CardTitle = styled.h3`
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
   font-size: 14px;
-  font-weight: 500;
-  color: #2b2b2b;
   line-height: 1.4;
+  color: #212121;
   margin: 0;
-  font-family: inherit;
-
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
+`;
 
-  @media screen and (min-width: 834px) {
-    font-size: 13px;
-  }
+export const ButtonGroup = styled.div`
+  display: flex;
+  gap: 16px;
+  justify-content: flex-start;
 `;
 
 export const SeeMoreButton = styled.button`
-  display: inline-block;
-  padding: 10px 24px;
   background-color: #ffb074;
-  color: #1a1a1a;
-  font-size: 14px;
-  font-weight: 500;
-  font-family: inherit;
+  color: #ffffff;
   border: none;
   border-radius: 8px;
+  padding: 10px 28px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  display: inline-block;
+  transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #ffa05a;
+    background-color: #fca058;
   }
 
-  &:active {
-    transform: scale(0.97);
+  &:disabled {
+    background-color: #ffd8be;
+    cursor: not-allowed;
   }
+`;
 
-  @media screen and (min-width: 834px) {
-    padding: 10px 28px;
+export const CollapseButton = styled.button`
+  background-color: transparent;
+  color: #212121;
+  border: 1px solid #ffb074;
+  border-radius: 8px;
+  padding: 10px 28px;
+  font-family: "Inter", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-block;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: #fff0e5;
   }
 `;

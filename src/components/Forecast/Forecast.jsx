@@ -9,6 +9,12 @@ import {
 } from "chart.js";
 import { Line } from "react-chartjs-2";
 import {
+  HiOutlineHeart,
+  HiOutlineArrowRight,
+  HiOutlineTrash,
+  HiOutlineRefresh,
+} from "react-icons/hi";
+import {
   Wrapper,
   Card,
   CardTitle,
@@ -20,13 +26,53 @@ import {
   DayTemp,
   DayDescription,
   StatusText,
-} from "./forecast.styled";
+  CitySection,
+  CityGrid,
+  CityCard,
+  CityHeader,
+  CityName,
+  CityCountry,
+  CityTime,
+  CityTag,
+  CityMeta,
+  WeatherIcon,
+  CityTempValue,
+  CityActions,
+  ActionButton,
+  FavoriteButton,
+  DeleteButton,
+  MoreButton,
+} from "./Forecast.styled";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
 
-const LAT = 50.0755; 
+const LAT = 50.0755;
 const LON = 14.4378;
+
+const buildCurrentCityState = (data) => {
+  const weather = data.weather?.[0];
+  const date = new Date((Date.now() / 1000 + (data.timezone || 0)) * 1000);
+  const dateOptions = { timeZone: "UTC" };
+
+  return {
+    city: data.name || "",
+    country: data.sys?.country || "",
+    time: `${String(date.getUTCHours()).padStart(2, "0")}:${String(
+      date.getUTCMinutes()
+    ).padStart(2, "0")}`,
+    date: date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      ...dateOptions,
+    }),
+    day: date.toLocaleDateString("en-US", { weekday: "long", ...dateOptions }),
+    temperature: Math.round(data.main?.temp ?? 0),
+    icon: weather?.icon || "",
+    description: weather?.description || "",
+  };
+};
 
 function formatHour(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
@@ -35,12 +81,12 @@ function formatHour(unixSeconds) {
 
 function formatDayShort(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
-  return date.toLocaleDateString([], { month: "short", day: "numeric" });
+  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
 function formatDay(unixSeconds) {
   const date = new Date(unixSeconds * 1000);
-  return date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
+  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 }
 
 
@@ -99,6 +145,47 @@ export default function Forecast() {
   const [daily, setDaily] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [favoriteCities, setFavoriteCities] = useState([]);
+  const [refreshingCityId, setRefreshingCityId] = useState(null);
+
+  useEffect(() => {
+    const handleCityAdded = async (event) => {
+      const city = event.detail;
+      if (!city?.city) return;
+
+      try {
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city.city)}&units=metric&appid=${API_KEY}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to fetch city weather");
+        const data = await response.json();
+        const cityData = buildCurrentCityState(data);
+
+        setFavoriteCities((prevCities) => {
+          const previousCity = prevCities.find(
+            (item) => item.city.toLowerCase() === cityData.city.toLowerCase()
+          );
+          const cities = [
+            ...prevCities.filter(
+              (item) => item.city.toLowerCase() !== cityData.city.toLowerCase()
+            ),
+            { id: `${data.id}`, liked: previousCity?.liked || false, ...cityData },
+          ];
+
+          return cities
+            .sort((firstCity, secondCity) => Number(secondCity.liked) - Number(firstCity.liked))
+            .slice(0, 3);
+        });
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    window.addEventListener("cityForecastAdded", handleCityAdded);
+
+    return () => {
+      window.removeEventListener("cityForecastAdded", handleCityAdded);
+    };
+  }, []);
 
   useEffect(() => {
     const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&units=metric&appid=${API_KEY}`;
@@ -109,7 +196,22 @@ export default function Forecast() {
         return res.json();
       })
       .then((data) => {
-        setHourly(data.list.slice(0, 16)); 
+        const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${data.city.coord.lat}&lon=${data.city.coord.lon}&units=metric&appid=${API_KEY}`;
+
+        return fetch(currentUrl).then((response) => {
+          if (!response.ok) throw new Error("Failed to fetch current weather");
+          return response.json();
+        }).then((currentData) => {
+          setFavoriteCities([{
+            id: `${currentData.id}`,
+            liked: false,
+            ...buildCurrentCityState(currentData),
+          }]);
+          return data;
+        });
+      })
+      .then((data) => {
+        setHourly(data.list.slice(0, 16));
         setDaily(groupByDay(data.list));
         setLoading(false);
       })
@@ -134,6 +236,57 @@ export default function Forecast() {
       </Wrapper>
     );
   }
+
+  const handleDeleteCity = (cityId) => {
+    setFavoriteCities((prevCities) =>
+      prevCities.filter((city) => city.id !== cityId)
+    );
+  };
+
+  const handleLikeCity = (cityId) => {
+    setFavoriteCities((prevCities) => {
+      const index = prevCities.findIndex((city) => city.id === cityId);
+      if (index === -1) return prevCities;
+
+      const shouldLike = !prevCities[index].liked;
+      const updatedCities = prevCities.map((city) => ({
+        ...city,
+        liked: shouldLike && city.id === cityId,
+      }));
+
+      if (!shouldLike) return updatedCities;
+
+      const likedCity = updatedCities.find((city) => city.id === cityId);
+      const withoutCity = updatedCities.filter((city) => city.id !== cityId);
+      return [likedCity, ...withoutCity];
+    });
+  };
+
+  const handleRefreshCity = (cityId) => {
+    const city = favoriteCities.find((item) => item.id === cityId);
+    if (!city || refreshingCityId === cityId) return;
+
+    setRefreshingCityId(cityId);
+
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city.city)}&units=metric&appid=${API_KEY}`;
+
+    fetch(url, { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error("Failed to refresh city");
+        return response.json();
+      })
+      .then((data) => {
+        setFavoriteCities((prevCities) =>
+          prevCities.map((item) =>
+            item.id === cityId
+              ? { id: cityId, liked: item.liked, ...buildCurrentCityState(data) }
+              : item
+          )
+        );
+      })
+      .catch((err) => setError(err.message))
+        .finally(() => setRefreshingCityId(null));
+  };
 
   const chartData = {
     labels: buildHourlyLabels(hourly),
@@ -180,6 +333,82 @@ export default function Forecast() {
 
   return (
     <Wrapper>
+      <CitySection>
+        <CityGrid>
+          {favoriteCities.map((city) => (
+            <CityCard key={city.id}>
+              <CityHeader>
+                <CityName>{city.city}</CityName>
+                <CityCountry>{city.country}</CityCountry>
+              </CityHeader>
+
+              <CityTime>{city.time}</CityTime>
+
+              <CityTag>Hourly forecast</CityTag>
+
+              <CityMeta>
+                <span>{city.date}</span>
+                <span>|</span>
+                <span>{city.day}</span>
+              </CityMeta>
+
+              <WeatherIcon
+                src={`https://openweathermap.org/img/wn/${city.icon}@2x.png`}
+                alt={city.description}
+              />
+
+              <CityTempValue>{city.temperature}°C</CityTempValue>
+
+              <CityActions>
+                <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                  <DeleteButton
+                    type="button"
+                    aria-label="Refresh city"
+                    onClick={() => handleRefreshCity(city.id)}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: "50%",
+                      color: "#f0a25d",
+                    }}
+                  >
+                    <HiOutlineRefresh />
+                  </DeleteButton>
+
+                  <FavoriteButton
+                    type="button"
+                    aria-label={city.liked ? "Unlike city" : "Like city"}
+                    aria-pressed={city.liked}
+                    onClick={() => handleLikeCity(city.id)}
+                  >
+                    {city.liked ? (
+                      <span style={{ color: "#f04d5a", fontSize: 22 }}>
+                        {"\u2665"}
+                      </span>
+                    ) : (
+                      <HiOutlineHeart />
+                    )}
+                  </FavoriteButton>
+                </div>
+
+                <MoreButton type="button" disabled>
+                  See more
+                  <HiOutlineArrowRight style={{ marginLeft: 6 }} />
+                </MoreButton>
+
+                <DeleteButton
+                  type="button"
+                  aria-label="Delete city"
+                  onClick={() => handleDeleteCity(city.id)}
+                >
+                  <HiOutlineTrash />
+                </DeleteButton>
+              </CityActions>
+            </CityCard>
+          ))}
+        </CityGrid>
+      </CitySection>
+
       <Card>
         <CardTitle>Hourly forecast</CardTitle>
         <ChartWrapper>
