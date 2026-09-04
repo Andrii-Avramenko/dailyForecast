@@ -14,7 +14,7 @@ import {
   CollapseButton,
 } from "./News.styled";
 
-const FALLBACK_IMG = "/assets/FallbackImage.jpg";
+import FALLBACK_IMG from '../../assets/FallbackImage.jpg'
 
 export const News = () => {
   const [articles, setArticles] = useState([]);
