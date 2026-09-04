@@ -161,8 +161,6 @@ export default function Forecast() {
         return [
           {
             id: `${city.city}-${Date.now()}`,
-          lat: data.coord?.lat,
-          lon: data.coord?.lon,
             city: city.city,
             country: city.country || "",
             lat: city.lat,
