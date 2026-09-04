@@ -21,10 +21,9 @@ export const ModalBackdrop = styled.div`
 export const ModalContainer = styled.div`
   position: relative;
 
-  width: 100%;
-  max-width: 600px;
+  width: clamp(293px, 40vw, 600px);
 
-  padding: 21 32px 16px;
+  padding: 21px 32px 16px;
 
   background-color: #ffffff;
 
@@ -32,26 +31,21 @@ export const ModalContainer = styled.div`
 
   box-sizing: border-box;
 
-  @media screen and (min-width: 480px) {
+  transition: width 300ms ease;
 
-    max-width: 293px;
+  @media screen and (min-width: 480px) {
     min-height: 454px;
 
     padding: 24px 35px 18px;
   }
 
   @media screen and (min-width: 768px) {
-    max-width: 400px;
     min-height: 440px;
 
     padding: 28px 40px 20px;
-
-    border-radius: 25px;
   }
 
   @media screen and (min-width: 1200px) {
-    max-width: 500px;
-
     padding: 60px 45px 22px;
 
     border-radius: 24px;
