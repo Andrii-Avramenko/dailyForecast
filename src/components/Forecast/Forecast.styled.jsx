@@ -199,7 +199,8 @@ export const CityTime = styled.div`
   text-align: center;
   margin-top: 6px;
   color: #000000;
-  align-items: center;
+margin: 0 auto;
+margin-top: 6px;
 `;
 
 export const CityTag = styled.button`
@@ -230,9 +231,9 @@ export const CityMeta = styled.div`
   display: flex;
   justify-content: center;
   gap: 6px;
-  color: ${({ theme }) => theme.colors.secondaryText};
   font-size: 0.72rem;
   margin-bottom: 6px;
+  color: #000000;
 `;
 
 export const WeatherIcon = styled.img`
@@ -242,10 +243,17 @@ export const WeatherIcon = styled.img`
 `;
 
 export const CityTempValue = styled.div`
-  text-align: center;
-  font-size: 2rem;
-  font-weight: 600;
-  color: ${({ theme }) => theme.colors.black};
+width: 69px;
+height: 39px;
+font-family: Montserrat;
+font-weight: 500;
+font-style: Medium;
+font-size: 32px;
+leading-trim: NONE;
+line-height: 100%;
+letter-spacing: 0%;
+color: #000000;
+margin: 0 auto;
 `;
 
 export const CityActions = styled.div`
@@ -257,9 +265,9 @@ export const CityActions = styled.div`
 `;
 
 export const ActionButton = styled.button`
-  background: #ffffff;
+  background: transparent;
   border: 1px solid rgba(76, 76, 76, 0.08);
-  color: ${({ theme }) => theme.colors.primary};
+  color: #000000;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -281,7 +289,7 @@ export const DeleteButton = styled(ActionButton)`
   width: 32px;
   height: 32px;
   border-radius: 10px;
-  color: #f0a25d;
+  color: #000000;
 `;
 
 export const MoreButton = styled.button`

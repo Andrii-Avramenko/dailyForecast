@@ -19,7 +19,7 @@ import {
 function Footer() {
     return (
         <>
-    <Container>
+    <Container id='footer'>
       <ContentWrapper>
       <Box>
       <LogoLink>
