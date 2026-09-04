@@ -11,7 +11,7 @@ import {
   Button,
   LoginText,
   LoginLink,
-} from "./modal.styled";
+} from "./Modal.styled";
 
 export default function Modal({ onClose, updateName }) {
   const [username, setUsername] = useState('')
@@ -72,7 +72,6 @@ export default function Modal({ onClose, updateName }) {
 
         <Form onSubmit={handleSubmit}>
           <Label htmlFor="username">Username</Label>
-
           <Input
             id="username"
             name="username"
@@ -83,7 +82,6 @@ export default function Modal({ onClose, updateName }) {
           />
 
           <Label htmlFor="email">E-Mail</Label>
-
           <Input
             id="email"
             name="email"
@@ -94,7 +92,6 @@ export default function Modal({ onClose, updateName }) {
           />
 
           <Label htmlFor="password">Password</Label>
-
           <Input
             id="password"
             name="password"
