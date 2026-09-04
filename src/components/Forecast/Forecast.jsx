@@ -153,31 +153,30 @@ export default function Forecast() {
       const city = event.detail;
       if (!city?.city) return;
 
-      try {
-        const url = `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city.city)}&units=metric&appid=${API_KEY}`;
-        const response = await fetch(url);
-        if (!response.ok) throw new Error("Failed to fetch city weather");
-        const data = await response.json();
-        const cityData = buildCurrentCityState(data);
+      setFavoriteCities((prevCities) => {
+        const filtered = prevCities.filter(
+          (item) => item.city.toLowerCase() !== city.city.toLowerCase()
+        );
 
-        setFavoriteCities((prevCities) => {
-          const previousCity = prevCities.find(
-            (item) => item.city.toLowerCase() === cityData.city.toLowerCase()
-          );
-          const cities = [
-            ...prevCities.filter(
-              (item) => item.city.toLowerCase() !== cityData.city.toLowerCase()
-            ),
-            { id: `${data.id}`, liked: previousCity?.liked || false, ...cityData },
-          ];
-
-          return cities
-            .sort((firstCity, secondCity) => Number(secondCity.liked) - Number(firstCity.liked))
-            .slice(0, 3);
-        });
-      } catch (err) {
-        setError(err.message);
-      }
+        return [
+          {
+            id: `${city.city}-${Date.now()}`,
+          lat: data.coord?.lat,
+          lon: data.coord?.lon,
+            city: city.city,
+            country: city.country || "",
+            lat: city.lat,
+            lon: city.lon,
+            time: city.time || "14:00",
+            date: city.date || "Today",
+            day: city.day || "Today",
+            temperature: city.temperature ?? 0,
+            icon: city.icon || "01d",
+            description: city.description || "clear sky",
+          },
+          ...filtered,
+        ].slice(0, 3);
+      });
     };
 
     window.addEventListener("cityForecastAdded", handleCityAdded);
