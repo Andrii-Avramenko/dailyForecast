@@ -11,10 +11,13 @@ import {
   Button,
   LoginText,
   LoginLink,
-}
- from "./modal.styled.";
+} from "./Modal.styled";
 
-export default function Modal({ onClose }) {
+export default function Modal({ onClose, updateName }) {
+  const [username, setUsername] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === "Escape") {
@@ -32,8 +35,25 @@ export default function Modal({ onClose }) {
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    console.log("Form submitted");
+    updateName(username)
+    onClose()
   };
+
+  const handleChange = (event) => {
+    switch (event.target.name) {
+      case 'username':
+        setUsername(event.target.value)
+        break
+      case 'email':
+        setEmail(event.target.value)
+        break
+      case 'password':
+        setPassword(event.target.value)
+        break
+      default:
+        console.error("Помилка")
+    }
+  }
 
   const handleBackdropClick = (event) => {
     if (event.target === event.currentTarget) {
@@ -57,6 +77,8 @@ export default function Modal({ onClose }) {
             name="username"
             type="text"
             placeholder="Username"
+            value={username}
+            onChange={handleChange}
           />
 
           <Label htmlFor="email">E-Mail</Label>
@@ -65,6 +87,8 @@ export default function Modal({ onClose }) {
             name="email"
             type="email"
             placeholder="E-Mail"
+            value={email}
+            onChange={handleChange}
           />
 
           <Label htmlFor="password">Password</Label>
@@ -73,6 +97,8 @@ export default function Modal({ onClose }) {
             name="password"
             type="password"
             placeholder="Password"
+            value={password}
+            onChange={handleChange}
           />
 
           <Button type="submit">
