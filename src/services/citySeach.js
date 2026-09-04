@@ -1,16 +1,28 @@
+import axios from "axios";
+
 const BASE_URL = "https://api.openweathermap.org";
 
 const API_KEY = "e3544af785f813ecfa684286223143f6";
 
+export const fetchForecast = (lat, lon) => {
+  return axios
+    .get(`${BASE_URL}/data/2.5/forecast`, {
+      params: { lat, lon, units: "metric", appid: API_KEY },
+    })
+    .then((response) => response.data)
+    .catch(() => {
+      throw new Error("Failed to fetch forecast");
+    });
+};
+
 const fetchCityForecast = (cityName) => {
-  return fetch(
-    `${BASE_URL}/data/2.5/weather?q=${cityName}&appid=${API_KEY}&units=metric`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("City not found!");
-      }
-      return response.json();
+  return axios
+    .get(`${BASE_URL}/data/2.5/weather`, {
+      params: { q: cityName, appid: API_KEY, units: "metric" },
+    })
+    .then((response) => response.data)
+    .catch(() => {
+      throw new Error("City not found!");
     })
     .then((data) => {
       if (typeof window !== "undefined") {
@@ -19,6 +31,8 @@ const fetchCityForecast = (cityName) => {
           detail: {
             city: data.name || cityName,
             country: data.sys?.country || "",
+            lat: data.coord?.lat,
+            lon: data.coord?.lon,
             temperature: Math.round(data.main?.temp ?? 0),
             description: data.weather?.[0]?.description || "clear sky",
             icon: data.weather?.[0]?.icon || "01d",

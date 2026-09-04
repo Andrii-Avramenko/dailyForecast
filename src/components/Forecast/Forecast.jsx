@@ -43,12 +43,11 @@ import {
   DeleteButton,
   MoreButton,
 } from "./Forecast.styled";
+import { fetchForecast } from "../../services/citySeach";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
-const API_KEY = "86ba681065c86ffb0f2df60a563c969a";
 
-const LAT = 50.0755;
-const LON = 14.4378;
+const DEFAULT_COORDINATES = { lat: 50.0755, lon: 14.4378 };
 
 const buildCurrentCityState = (data) => {
   const weather = data.weather?.[0];
@@ -143,6 +142,7 @@ function groupByDay(list) {
 export default function Forecast() {
   const [hourly, setHourly] = useState([]);
   const [daily, setDaily] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [favoriteCities, setFavoriteCities] = useState([]);
@@ -188,13 +188,12 @@ export default function Forecast() {
   }, []);
 
   useEffect(() => {
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${LAT}&lon=${LON}&units=metric&appid=${API_KEY}`;
+    if (!selectedCity) return;
 
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch forecast");
-        return res.json();
-      })
+    setLoading(true);
+    setError(null);
+
+    fetchForecast(selectedCity.lat, selectedCity.lon)
       .then((data) => {
         const currentUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${data.city.coord.lat}&lon=${data.city.coord.lon}&units=metric&appid=${API_KEY}`;
 
@@ -219,23 +218,7 @@ export default function Forecast() {
         setError(err.message);
         setLoading(false);
       });
-  }, []);
-
-  if (loading) {
-    return (
-      <Wrapper>
-        <StatusText>Loading forecast...</StatusText>
-      </Wrapper>
-    );
-  }
-
-  if (error) {
-    return (
-      <Wrapper>
-        <StatusText>Something went wrong: {error}</StatusText>
-      </Wrapper>
-    );
-  }
+  }, [selectedCity]);
 
   const handleDeleteCity = (cityId) => {
     setFavoriteCities((prevCities) =>
@@ -344,7 +327,13 @@ export default function Forecast() {
 
               <CityTime>{city.time}</CityTime>
 
-              <CityTag>Hourly forecast</CityTag>
+              <CityTag
+                type="button"
+                onClick={() => setSelectedCity(city)}
+                aria-pressed={selectedCity?.id === city.id}
+              >
+                Hourly forecast
+              </CityTag>
 
               <CityMeta>
                 <span>{city.date}</span>
@@ -409,31 +398,41 @@ export default function Forecast() {
         </CityGrid>
       </CitySection>
 
-      <Card>
-        <CardTitle>Hourly forecast</CardTitle>
-        <ChartWrapper>
-          <Line data={chartData} options={chartOptions} />
-        </ChartWrapper>
-      </Card>
+      {selectedCity && (
+        <>
+          {loading && <StatusText>Loading forecast for {selectedCity.city}...</StatusText>}
+          {error && <StatusText>Something went wrong: {error}</StatusText>}
+          {!loading && !error && (
+            <>
+              <Card>
+                <CardTitle>Hourly forecast for {selectedCity.city}</CardTitle>
+                <ChartWrapper>
+                  <Line data={chartData} options={chartOptions} />
+                </ChartWrapper>
+              </Card>
 
-      <Card>
-        <CardTitle>5-day forecast</CardTitle>
-        <DayList>
-          {daily.map((day) => (
-            <DayRow key={day.dt}>
-              <DayDate>{formatDay(day.dt)}</DayDate>
-              <DayIcon
-                src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
-                alt={day.description}
-              />
-              <DayTemp>
-                {Math.round(day.max)}/{Math.round(day.min)}°C
-              </DayTemp>
-              <DayDescription>{day.description}</DayDescription>
-            </DayRow>
-          ))}
-        </DayList>
-      </Card>
+              <Card>
+                <CardTitle>5-day forecast for {selectedCity.city}</CardTitle>
+                <DayList>
+                  {daily.map((day) => (
+                    <DayRow key={day.dt}>
+                      <DayDate>{formatDay(day.dt)}</DayDate>
+                      <DayIcon
+                        src={`https://openweathermap.org/img/wn/${day.icon}@2x.png`}
+                        alt={day.description}
+                      />
+                      <DayTemp>
+                        {Math.round(day.max)}/{Math.round(day.min)}°C
+                      </DayTemp>
+                      <DayDescription>{day.description}</DayDescription>
+                    </DayRow>
+                  ))}
+                </DayList>
+              </Card>
+            </>
+          )}
+        </>
+      )}
     </Wrapper>
   );
 }
