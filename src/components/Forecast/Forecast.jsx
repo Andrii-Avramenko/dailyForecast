@@ -43,7 +43,7 @@ import {
   DeleteButton,
   MoreButton,
 } from "./Forecast.styled";
-import { fetchForecast } from "../../services/citySeach";
+import { API_KEY, fetchForecast } from "../../services/citySeach";
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip);
 

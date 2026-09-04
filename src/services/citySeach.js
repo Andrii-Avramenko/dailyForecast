@@ -2,7 +2,7 @@ import axios from "axios";
 
 const BASE_URL = "https://api.openweathermap.org";
 
-const API_KEY = "e3544af785f813ecfa684286223143f6";
+export const API_KEY = "e3544af785f813ecfa684286223143f6";
 
 export const fetchForecast = (lat, lon) => {
   return axios
